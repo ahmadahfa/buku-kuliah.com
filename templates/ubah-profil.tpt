@@ -1,0 +1,264 @@
+<?php
+	if(!$_SESSION['SessionData']){
+		$_SESSION['halaman-utama.tpt']['message'] = "You're not authorized";
+		header("Location: index.php");
+		exit(0);
+	}
+?>
+
+<!DOCTYPE HTML>
+<!--
+	Arcana 1.5 by HTML5 Up!
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<link rel="icon" type="image/png" href="images/logo.png" alt="logo">
+		<title><?php echo $_SESSION['SessionData']['Nama']; ?> - Portal Online Pinjam-meminjam Buku Kuliah</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700" rel="stylesheet" />
+		<noscript><link rel="stylesheet" href="css/5grid/core.css" /><link rel="stylesheet" href="css/5grid/core-desktop.css" /><link rel="stylesheet" href="css/5grid/core-1200px.css" /><link rel="stylesheet" href="css/5grid/core-noscript.css" /><link rel="stylesheet" href="css/style.css" /><link rel="stylesheet" href="css/style-desktop.css" /></noscript>
+		<script src="css/5grid/jquery.js"></script>
+		<script src="js/jquery.tools.min.js"></script>
+		<script src="css/5grid/init.js?use=mobile,desktop,1000px&amp;mobileUI=1&amp;mobileUI_theme=none&amp;mobileUI_titleBarHeight=60&amp;mobileUI_openerWidth=52"></script>
+		<!--[if IE 9]><link rel="stylesheet" href="css/style-ie9.css" /><![endif]-->
+		<link rel="stylesheet" href="css/jRating.jquery.css" type="text/css" />
+		<script src="js/jRating.jquery.js"></script>
+	</head>
+	<body>
+
+
+		<!-- Header -->
+
+			<div id="header-wrapper">
+				<header class="5grid-layout" id="site-header">
+					<div class="row">
+						<div class="12u">
+							<div id="logo">
+								<img style="z-index: 1000000;" src="images/logo.png" alt="logo" width="150" height="150" />
+								<h1 style="margin-left:30px; color:#fff; display: inline;">Buku-Kuliah.com</h1>
+							</div>
+							<nav class="mobileUI-site-nav" id="site-nav">
+								<ul>
+									<li><a href="index.php">Homepage</a></li>
+									<?php
+										if(isset($_SESSION['SessionData'])){ ?>
+											<li class="current_page_item"><a href="controller.php?dispatch=lihat-profil">Profile</a></li>											
+											<li><a href="controller.php?dispatch=keluar">Sign Out</a></li>
+									<?php }else{ ?>											
+											<li><a href="controller.php?dispatch=daftar-pengguna">Sign Up</a></li>
+									<?php } ?>
+								</ul>
+							</nav>
+							<div class="search">
+								<form action="controller.php" method="get">
+									<input type="hidden" name="dispatch" value="pencarian" />
+									<input style="background: #fff;" type="text" id="search" name="keywords" placeholder="Enter keywords to search" required>
+									<input type="submit" value="Search" id="submit" class="button">
+								</form>
+						</div>
+						</div>
+					</div>
+				</header>
+			</div>
+
+		<!-- Main -->
+
+			<div id="main-wrapper" class="subpage">
+				<div class="5grid-layout">
+					<div class="row">
+						<div class="9u">
+					
+							<?php 
+							if(isset($_SESSION['ubah-profil.tpt']['message'])){?>
+								<div class="row">
+									<div class="12u">
+										<div class="error-box">
+											<span><?php echo $_SESSION['ubah-profil.tpt']['message']; unset($_SESSION['ubah-profil.tpt']['message']); ?></span>
+										</div>
+									</div>
+								</div>
+							<?php }?>
+						
+							<!-- Content -->
+
+								<article class="first">
+									<div id="leftcontainer" style="width:680px">
+									<h2>Update Your Details</h2><hr /><br />    
+										<form name="edit_profile" action="controller.php" method="post" enctype="multipart/form-data">
+											<input type="hidden" name="dispatch" value="ubah-profil">
+											<table style="margin-left:30px; padding-left:30px" >
+											   <tr>
+												<td><label for="name">Full Name*</label></td>
+												<td><input type="text" name="Nama" id="name" value="<?php echo $_SESSION['SessionData']['Nama'];?>"><br>
+												<span style="font-size:13px">6-40 characters, alphabet/whitespaces</span></td>
+												</tr><tr>
+												<td><label for="email">E-mail*</label></td>
+												<td><input type="text" name="Email" id="email" value="<?php echo $_SESSION['SessionData']['Email'];?>"><br>
+												</td>
+												</tr><tr>
+												<td><label for="password">Password*</label></td>
+												<td><input type="password" name="Password" id="password" value="sd9fhsd82398sda19823asdfgf"><br>
+												<span style="font-size:13px">6-15 characters, alphanumeric/underscore/dash</span></td>
+												</tr><tr>
+												<td><label for="password">Re-type Password*</label></td>
+												<td><input type="password"  name="Password2" id="password" value="sd9fhsd82398sda19823asdfgf"></td>
+												</tr><tr>
+												<td><label for="location">Location*</label></td>
+												<td><div style="width:400px">
+	<select name="Lokasi">
+    <option value="Ambon" <?php if( @$_SESSION['SessionData']['Lokasi']=="Ambon") echo "selected=selected"; ?>>Ambon</option>    
+	<option value="Banda Aceh" <?php if( @$_SESSION['SessionData']['Lokasi']=="Banda Aceh") echo "selected=selected"; ?>>Banda Aceh</option>    
+	<option value="Bandar Lampung" <?php if( @$_SESSION['SessionData']['Lokasi']=="Bandar Lampung") echo "selected=selected"; ?>>Bandar Lampung</option>    
+	<option value="Bandung" <?php if( @$_SESSION['SessionData']['Lokasi']=="Bandung") echo "selected=selected"; ?>>Bandung</option>    
+	<option value="Banjarmasin" <?php if( @$_SESSION['SessionData']['Lokasi']=="Banjarmasin") echo "selected=selected"; ?>>Banjarmasin</option>    
+	<option value="Bengkulu" <?php if( @$_SESSION['SessionData']['Lokasi']=="Bengkulu") echo "selected=selected"; ?>>Bengkulu</option>
+	<option value="Depok" <?php if( @$_SESSION['daftar-pengguna.tpt']['lokasi']=="Depok") echo "selected=selected"; ?>>Depok</option>    
+	<option value="Jakarta" <?php if( @$_SESSION['SessionData']['Lokasi']=="Jakarta") echo "selected=selected"; ?>>Jakarta</option>    
+	<option value="Jayapura" <?php if( @$_SESSION['SessionData']['Lokasi']=="Jayapura") echo "selected=selected"; ?>>Jayapura</option>    
+	<option value="Kupang" <?php if( @$_SESSION['SessionData']['Lokasi']=="Kupang") echo "selected=selected"; ?>>Kupang</option>    
+	<option value="Makasar" <?php if( @$_SESSION['SessionData']['Lokasi']=="Makasar") echo "selected=selected"; ?>>Makasar</option>    
+	<option value="Manado" <?php if( @$_SESSION['SessionData']['Lokasi']=="Manado") echo "selected=selected"; ?>>Manado</option>    
+	<option value="Mataram" <?php if( @$_SESSION['SessionData']['Lokasi']=="Mataram") echo "selected=selected"; ?>>Mataram</option>    
+	<option value="Medan" <?php if( @$_SESSION['SessionData']['Lokasi']=="Medan") echo "selected=selected"; ?>>Medan</option>    
+	<option value="Padang" <?php if( @$_SESSION['SessionData']['Lokasi']=="Padang") echo "selected=selected"; ?>>Padang</option>    
+	<option value="Palangkaraya" <?php if( @$_SESSION['SessionData']['Lokasi']=="Palangkaraya") echo "selected=selected"; ?>>Palangkaraya</option>    
+	<option value="Palembang" <?php if( @$_SESSION['SessionData']['Lokasi']=="Palembang") echo "selected=selected"; ?>>Palembang</option>    
+	<option value="Palu" <?php if( @$_SESSION['SessionData']['Lokasi']=="Palu") echo "selected=selected"; ?>>Palu</option>    
+	<option value="Pekanbaru" <?php if( @$_SESSION['SessionData']['Lokasi']=="Pekanbaru") echo "selected=selected"; ?>>Pekanbaru</option>    
+	<option value="Pontianak" <?php if( @$_SESSION['SessionData']['Lokasi']=="Pontianak") echo "selected=selected"; ?>>Pontianak</option>    
+	<option value="Semarang" <?php if( @$_SESSION['SessionData']['Lokasi']=="Semarang") echo "selected=selected"; ?>>Semarang</option>    
+	<option value="Surabaya" <?php if( @$_SESSION['SessionData']['Lokasi']=="Surabaya") echo "selected=selected"; ?>>Surabaya</option>    
+	<option value="Yogyakarta" <?php if( @$_SESSION['SessionData']['Lokasi']=="Yogyakarta") echo "selected=selected"; ?>>Yogyakarta</option>    
+	</select><br>
+	<span style="font-size:13px;">choose the location closest to you!</span>
+</div> </td>
+												</tr><tr>
+												<td style="vertical-align:top"><label for="location" >Description</label></td>
+												<td><textarea  name="Deskripsi" id="message"><?php echo $_SESSION['SessionData']['Deskripsi'];?>
+												</textarea></td>
+												</tr><tr>
+												<td><label for="picupload">Photo Upload</label></td>
+												<td>
+													<input type="file" name="picture" id="picupload">
+													<br />											
+													<span style="float:left; font-size:11px">
+													Make sure that photo you're going to upload is less than equal- 100kb of size and having dimension of 800 x 640 pixels.
+													<br>Photo must be having extension of either .png, .jpg, or .bmp.
+													</span> 
+												</td>
+												</tr>
+											</table>
+											<p id="red">Fields signed (*) must be filled in.</p>
+											<div style="float:right"><input class="button" type="submit" value="Save"></div>
+										</form>
+									</div>
+								</article>							
+						</div>
+						<div class="3u">
+						
+							<!-- Sidebar -->
+							
+								<section >
+									<h3><?php echo $_SESSION['SessionData']['Nama'];?></h3>
+											<div style="padding: 10px; border: 1px solid #eee">
+									  <p><a href="#"><img src="<?php echo $_SESSION['SessionData']['URLFoto'];?>" width="150px" height="180px" alt="" /></a> </p>
+									  <section >
+									    <div style="padding: 10px; border: 1px solid #eee">
+									      <ul class="link-list">
+									        <li> <img style="vertical-align:middle;" src="images/picture.png" alt="" width="30" height="30"/>  <a href="controller.php?dispatch=ubah-gambar">Change Profile Picture</a></li>
+									        <li> <img style="vertical-align:middle;" src="images/edit-profil.png" alt="" width="30" height="30"/> <a href="controller.php?dispatch=ubah-profil">Update My Profile</a></li>
+								          </ul>
+								        </div>
+								      </section>
+                                      <section class="last">
+                                        <h3>Messaging</h3>
+                                        <div style="padding: 10px; border: 1px solid #eee">
+                                          <ul class="link-list">
+                                            <li><img style="vertical-align:middle;" src="images/inbox-pict.jpg" alt="" width="30" height="30"/> <a href="controller.php?dispatch=pesan-masuk">Inbox</a></li>
+                                            <li><img style="vertical-align:middle;" src="images/create.jpg" alt="" width="30" height="30"/><a href="controller.php?dispatch=kirim-pesan">Create New Message</a></li>
+                                          </ul>
+                                        </div>
+                                      </section>
+                                      <p>&nbsp;</p>
+									</div>
+								      </section>
+                                     
+                                      <p>&nbsp;</p>
+									</div>
+								</section>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		<!-- Footer -->
+			<div id="footer-wrapper">
+				<footer class="5grid-layout" id="site-footer">
+					<div class="row">
+						<div class="3u">
+							<section class="first">
+								<h2>Developer</h2>
+								<ul class="link-list">
+									<li><img style="vertical-align:middle;" src="images/pic4.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=ahmadahfa">Ahmad Fanani</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic1.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=firliasandyta">Firlia Sandyta</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic2.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=irfan92">Muhammad Irfan Nasution</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic5.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=nempyong">Vemmy Yusiana</a></li>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Link</h2>
+								<ul class="link-list">
+									<li><a href="http://twitter.com/Buku_Kuliah">Twitter</a>
+									<li><a href="http://www.facebook.com/pages/Buku-Kuliahcom/550712361617304?fref=ts">Facebook</a>
+									<li><a href="#">About</a>						
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Help</h2>
+								<ul class="link-list">
+									<li><a href="#">Policy</a>
+									<li><a href="#">Terms and Conditions</a>
+									<li><a href="#">User Guide</a>
+									<li><a href="#">F.A.Q.</a>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section class="last">
+								<h2>Contact Us</h2>
+								<ul class="link-list">
+									<li><a href="#">support@buku-kuliah.com</a>
+									<li>(+62) 8576 1234 123</li>
+									<li>Depok, West Java</li>
+									<li>Indonesia</li>
+								</ul>
+							</section>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div class="divider"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div id="copyright">
+								&copy; 2013 Buku-Kuliah.com. <br />PPL C4 - All Rights Reserved
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+
+	</body>
+</html>

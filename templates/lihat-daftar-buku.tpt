@@ -1,0 +1,238 @@
+<?php
+	if(!$_SESSION['SessionData'] || $_SESSION['SessionData']['isAdmin'] != 1){
+		$_SESSION['halaman-utama.tpt']['message'] = "You're not authorized";
+		header("Location: index.php");
+		exit(0);
+	}
+	if(!$_SESSION['lihat-daftar-buku.tpt']){
+		header("Location: controller.php?dispatch=lihat-daftar-buku");
+		exit(0);
+	}
+?>
+
+<!DOCTYPE HTML>
+<!--
+	Arcana 1.5 by HTML5 Up!
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<!DOCTYPE HTML>
+<!--
+	Arcana 1.5 by HTML5 Up!
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<link rel="icon" type="image/png" href="images/logo.png" alt="logo">
+		<title>Portal Online Pinjam-meminjam Buku Kuliah</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700" rel="stylesheet" />
+		<link rel="stylesheet" href="css/style.css" />
+		<noscript><link rel="stylesheet" href="css/5grid/core.css" /><link rel="stylesheet" href="css/5grid/core-desktop.css" /><link rel="stylesheet" href="css/5grid/core-1200px.css" /><link rel="stylesheet" href="css/5grid/core-noscript.css" /><link rel="stylesheet" href="css/style-desktop.css" /></noscript>
+		<script src="css/5grid/jquery.js"></script>
+		<script src="js/jquery.tools.min.js"></script>
+		<script src="css/5grid/init.js?use=mobile,desktop,1000px&amp;mobileUI=1&amp;mobileUI_theme=none&amp;mobileUI_titleBarHeight=60&amp;mobileUI_openerWidth=52"></script>
+		<!--[if IE 9]><link rel="stylesheet" href="css/style-ie9.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Header -->
+
+			<div id="header-wrapper">
+				<header class="5grid-layout" id="site-header">
+					<div class="row">
+						<div class="12u">
+							<div id="logo">
+								<img style="z-index: 1000000;" src="images/logo.png" alt="logo" width="150" height="150" />
+								<h1 style="margin-left:30px; color:#fff; display: inline;">Buku-Kuliah.com</h1>
+							</div>
+							<nav class="mobileUI-site-nav" id="site-nav">
+								<ul>
+									<li class="current_page_item"><a href="index.php">Homepage</a></li>
+									<?php
+										if(isset($_SESSION['SessionData'])){ ?>
+											<li><a href="controller.php?dispatch=lihat-profil">Profile</a></li>											
+											<li><a href="controller.php?dispatch=keluar">Sign Out</a></li>
+									<?php } ?>
+								</ul>
+							</nav>
+							<div class="search">
+								<form action="controller.php" method="get">
+									<input type="hidden" name="dispatch" value="pencarian" />
+									<input style="background: #fff;" type="text" id="search" name="keywords" placeholder="Enter keywords to search" required>
+									<input type="submit" value="Search" id="submit" class="button">
+								</form>
+							</div>
+						</div>
+					</div>
+				</header>
+			</div>
+
+		<!-- Main -->
+
+			<div id="main-wrapper">
+				<div class="5grid-layout">		
+					<div class="row">
+						<div class="9u mobileUI-main-content">
+								<article class="first">							
+								<h2>Books list</h2><hr /><br />				
+								<div id="leftcontainer">
+									<form id="form1" method="post" action="controller.php">
+<input type="hidden" name="dispatch" value="hapus-buku" />
+									<?php foreach($_SESSION['lihat-daftar-buku.tpt']['data'] as $cat=>$books) {?>
+									<!-- kategori -->
+									<div id="userlistrow" style="padding: 10px; margin: 0 auto 10px auto; background:#808080" width="680px">
+											<span style="text-align:center; font-size:18pt; color:#fff;"><?php echo $cat; ?></span>
+									</div>
+									
+									<table style="margin: 0 auto;" width="780px">
+										<tr style="background:#eee; font-size:20px">
+											<td style="text-align:center" width="80px">ID</td>
+											<td style="text-align:center">TITLE</td>
+											<td style="text-align:center" width="180px">OWNER</td>
+											<td style="text-align:center" width="95px">IMAGE</td>
+											<td style="text-align:center" width="105px">DELETE</td>
+										</tr>
+									</table>
+									
+									<div style="height:<?php echo count($books)*125; ?>px; overflow:auto; border-bottom:1px solid #eee; border-left:1px solid #eee;" width="680px">
+									<table style="margin: 0 auto;" width="680px">
+										
+										<tr>
+											<td style="text-align:center" width="80px"></td>
+											<td style="text-align:center"></td>
+											<td style="text-align:center" width="160px"></td>
+											<td style="text-align:center" width="85px"></td>
+											<td style="text-align:center" width="85px"></td>
+										</tr>	
+										<?php foreach($books as $book){ ?>
+										</tr>
+										<tr id="userlistrow">
+											<td style="text-align:center"><?php echo $book['IDBuku']; ?></td>
+											<td style="text-align:center"><a href="controller.php?dispatch=info-buku&id=<?php echo $book['IDBuku'];?>"><?php echo stripslashes(stripslashes(preg_replace("|\\\\r\\\\n|i","<br />",$book['Judul']))); ?></a></td>
+											<td style="text-align:center"><a href="controller.php?dispatch=lihat-profil&user=<?php echo $book['Username'];?>"> <?php echo $book['Nama'];?></a></td>
+											<td style="text-align:center">
+												<img src="<?php echo $book['URLFoto']; ?>" width="80px" height="100px"/>
+											</td>
+											<td style="text-align:center"><input type="checkbox" name="id[]" value="<?php echo $id; ?>" class="deletes"/></td>
+										</tr> 
+										<?php } ?>
+									</table>
+									</div>
+									<br /><br /> </form>
+									<?php } ?>
+									<div style="margin-top:10px; padding:10px; float:right">
+										<a onclick="var n = 0; var clr = false; $('.deletes').each(function(i, a){ clr |= a.checked; if(a.checked) n++; }); if(clr){ if(confirm('Are you sure to delete '+n+' books?')){$('#form1').submit();} }else{ alert('At least choose a book to delete.') }" class="button">Delete Book(s)</a>
+									</div>
+								
+								</div>				
+
+								</article>		
+<!------------------------------------------ PE SINI ----------------------------------------------------->								
+
+						</div>
+						<div class="3u">
+						
+							<!-- Sidebar -->
+							
+								<section >
+									<h3><?php echo $_SESSION['SessionData']['Nama'];?></h3>
+									<div style="padding: 10px; border: 1px solid #eee">
+									  <p><a href="#"><img src="<?php echo $_SESSION['SessionData']['URLFoto'];?>" width="150px" height="180px" alt="" /></a> </p>
+									  <section >
+									    <div style="padding: 10px; border: 1px solid #eee">
+									      <ul class="link-list">
+									         <li> <img style="vertical-align:middle;" src="images/picture.png" alt="" width="30" height="30"/>  <a href="controller.php?dispatch=ubah-gambar">Change Profile Picture</a></li>
+									        <li> <img style="vertical-align:middle;" src="images/edit-profil.png" alt="" width="30" height="30"/> <a href="controller.php?dispatch=ubah-profil">Update My Profile</a></li>
+								          </ul>
+								        </div>
+								      </section>
+                                      <section class="last">
+                                        <h3>Messaging</h3>
+                                        <div style="padding: 10px; border: 1px solid #eee">
+                                          <ul class="link-list">
+                                            <li><img style="vertical-align:middle;" src="images/inbox-pict.jpg" alt="" width="30" height="30"/> <a href="controller.php?dispatch=pesan-masuk">Inbox</a></li>
+                                            <li><img style="vertical-align:middle;" src="images/create.jpg" alt="" width="30" height="30"/><a href="controller.php?dispatch=kirim-pesan">Create New Message</a></li>
+                                         
+                                          </ul>
+                                        </div>
+                                      </section>
+                                      <p>&nbsp;</p>
+									</div>
+								</section>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		<!-- Footer -->
+			<div id="footer-wrapper">
+				<footer class="5grid-layout" id="site-footer">
+					<div class="row">
+						<div class="3u">
+							<section class="first">
+								<h2>Developer</h2>
+								<ul class="link-list">
+									<li><img style="vertical-align:middle;" src="images/pic4.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="#">Ahmad Fanani</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic1.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="#">Firlia Sandyta</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic2.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=irfan92">Muhammad Irfan Nasution</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic5.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="#">Vemmy Yusiana</a></li>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Link</h2>
+								<ul class="link-list">
+									<li><a href="http://twitter.com/Buku_Kuliah">Twitter</a>
+									<li><a href="http://www.facebook.com/pages/Buku-Kuliahcom/550712361617304?fref=ts">Facebook</a>
+									<li><a href="#">About</a>
+																	
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Help</h2>
+								<ul class="link-list">
+									<li><a href="#">Policy</a>
+									<li><a href="#">Terms and Conditions</a>
+									<li><a href="#">User Guide</a>
+									<li><a href="#">F.A.Q.</a>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section class="last">
+								<h2>Contact Us</h2>
+								<ul class="link-list">
+									<li><a href="#">support@buku-kuliah.com</a>
+									<li>(+62) 8576 1234 123</li>
+									<li>Depok, West Java</li>
+									<li>Indonesia</li>
+								</ul>
+							</section>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div class="divider"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div id="copyright">
+								&copy; 2013 Buku-Kuliah.com. <br />PPL C4 - All Rights Reserved
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+
+	</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+<!--
+	Arcana 1.5 by HTML5 Up!
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head><link rel="icon" type="image/png" href="images/logo.png" alt="logo">
+		<title>Portal Online Pinjam-meminjam Buku Kuliah</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700" rel="stylesheet" />
+		<link rel="stylesheet" href="css/style.css" />
+		<noscript><link rel="stylesheet" href="css/5grid/core.css" /><link rel="stylesheet" href="css/5grid/core-desktop.css" /><link rel="stylesheet" href="css/5grid/core-1200px.css" /><link rel="stylesheet" href="css/5grid/core-noscript.css" /><link rel="stylesheet" href="css/style-desktop.css" /></noscript>
+		<script src="css/5grid/jquery.js"></script>
+		<script src="js/jquery.tools.min.js"></script>
+		<script src="css/5grid/init.js?use=mobile,desktop,1000px&amp;mobileUI=1&amp;mobileUI_theme=none&amp;mobileUI_titleBarHeight=60&amp;mobileUI_openerWidth=52"></script>
+		<!--[if IE 9]><link rel="stylesheet" href="css/style-ie9.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Header -->
+
+			<div id="header-wrapper">
+				<header class="5grid-layout" id="site-header">
+					<div class="row">
+						<div class="12u">
+							<div id="logo">
+								<img style="z-index: 1000000;" src="images/logo.png" alt="logo" width="150" height="150" />
+								<h1 style="margin-left:30px; color:#fff; display: inline;">Buku-Kuliah.com</h1>
+							</div>
+							<nav class="mobileUI-site-nav" id="site-nav">
+								<ul>
+									<li class="current_page_item"><a href="index.php">Homepage</a></li>
+									<?php
+										if(isset($_SESSION['SessionData']) && $_SESSION['SessionData']['isAdmin'] == 1){ ?>
+											<li><a href="view.php?p=halaman-admin.tpt">Maintenance</a></li>											
+											<li><a href="controller.php?dispatch=keluar">Sign Out</a></li>
+									<?php }else if(isset($_SESSION['SessionData']) && $_SESSION['SessionData']['isAdmin'] == 0){ ?>
+											<li><a href="controller.php?dispatch=lihat-profil">Profile</a></li>								
+											<li><a href="controller.php?dispatch=keluar">Sign Out</a></li>
+									<?php }?>
+								</ul>
+							</nav>
+							<div class="search">
+								<form action="controller.php" method="get">
+									<input type="hidden" name="dispatch" value="pencarian" />
+									<input style="background: #fff;" type="text" id="search" name="keywords" placeholder="Enter keywords to search" required>
+									<input type="submit" value="Search" id="submit" class="button">
+								</form>
+							</div>
+						</div>
+					</div>
+				</header>
+			</div>
+
+		<!-- Main -->
+
+			<div id="main-wrapper">
+				<div class="5grid-layout">				
+					<div class="row">
+						<div class="12u">
+							<!-- <div id="banner">
+								<form class="form-wrapper" action="controller.php" method="get">
+									<input type="hidden" name="dispatch" value="pencarian" />
+									<input type="text" id="search" name="keywords" placeholder="Type book title, tag, or ..." required>
+									<input type="submit" value="Search" id="submit">
+								</form>
+							</div> -->	
+						</div>
+					</div>
+						
+					<div class="row">
+						<div class="3u">
+							
+							<!-- Sidebar -->
+							
+								<section>
+								<?php
+								if(isset($_SESSION['SessionData'])){
+								$username = $_SESSION['SessionData']['Username'];
+								$password = $_SESSION['SessionData']['Password'];
+								$imageURL = $_SESSION['SessionData']['URLFoto'];
+								?>
+									<h3>Welcome <?php echo $username;?>,</h3>
+									<div style="padding: 10px 0 10px 60px; border: 1px solid #eee;">
+										<a href="#"><img src="<?php echo $imageURL;?>" width="150px" height="180px" alt="" /></a>
+										<br /><br />
+										<span style="padding-left: 30px"><a href="controller.php?dispatch=keluar" class="button">Sign Out</a></span>
+									</div>
+								<?php } else{ ?>
+									<h3>Sign In</h3>
+									<form style="padding: 10px; border: 1px solid #eee" class="login" method="post" action="controller.php">
+										<input type="hidden" name="dispatch" value="masuk" />
+										<label for="username">Username :</label><br /> <input name="username" type="text" placeholder="Enter your username" autofocus><br />
+										<label for="password">Password</label><br /> <input name="password" type="password" placeholder="Password"><br />
+										<input type="submit" value="Sign In" class="button" /> 										
+										<div>
+											<br />
+											<a href="controller.php?dispatch=prareset-password" title="Reset Password" align="center">Reset Password</a>
+											<h1 style = "margin-top : 10px"> Don't have an account? </h1>
+											<a href="controller.php?dispatch=daftar-pengguna" class="button">Sign Up Now</a>
+										</div>
+									</form>
+								<?php } ?>
+								</section>
+								<br />
+								<section class="last">
+									<div style="padding: 10px; border: 1px solid #eee">
+									<h3>About Buku-Kuliah.com</h3>
+									<div align="justify">
+										Buku-Kuliah.com is the first website for lecture book lending and borrowing in Indonesia.					
+									</div>
+									<ul class="link-list">
+										
+									</ul>
+									</div>
+								</section>
+						
+						</div>
+						<div class="9u mobileUI-main-content">
+					
+							<!-- Content -->
+								<article class="first">								
+								
+								<?php if(isset($_SESSION['halaman-utama.tpt']['message'])){ ?>
+										<div class="row">
+											<div class="12u">
+												<div class="error-box">
+													<span><?php echo $_SESSION['halaman-utama.tpt']['message']; unset($_SESSION['halaman-utama.tpt']['message']); ?></span>
+												</div>
+											</div>
+										</div>
+									<?php }?>
+								
+								<div class="row">
+									<?php
+									if(isset($_SESSION['SessionData'])){ ?>
+									<div id='form_wrap'>
+										<form id="contact-form">
+											<p id="formstatus"></p>
+											Post your question here : <br />
+											<textarea  name="message" value="Your Message" id="message" placeholder="What's on your mind..."></textarea>
+											<br />
+											<a href="controller.php?dispatch=daftar" class="button" style="float:right">Post Question</a>
+										</form>
+									</div>
+									<?php }?>
+				
+									<div class="12u">
+										<section class="thumbnails first last">
+											<div class="5grid">
+												<div class="row">
+													<div class="4u">
+														<div class="thumbnail first">	
+															<a href="controller.php?dispatch=lihat-profil&user=irfan92"><img src="uploads/irfan92-IMG-20120723-00904.jpg" alt="" width="92" height="122"/></a>
+															<blockquote>Baru saja menghapus buku "Kalkulus 2" dari daftar bukunya</blockquote>
+															<cite><strong>Muhammad Irfan Nasution</strong>9 April 2013, 11:36 pm</cite>
+														</div>
+													</div>
+													<div class="4u">
+														<div class="thumbnail first">	
+															<a href="controller.php?dispatch=lihat-profil&user=irfan92"><img src="uploads/irfan92-IMG-20120723-00904.jpg" alt="" width="92" height="122"/></a>
+															<blockquote>Baru saja menambahkan buku "Teknik Kompilator untuk Insinyur" ke daftar bukunya</blockquote>
+															<cite><strong>Muhammad Irfan Nasution</strong>10 April 2013, 4:48 pm</cite>
+														</div>
+													</div>
+													<div class="4u">
+														<div class="thumbnail">
+															<a href="#"><img src="images/pic4.jpg" alt="" /></a>
+															<blockquote>Baru saja menambahkan buku baru di daftar bukunya</blockquote>
+															<cite><strong>Ahmad Fanani</strong>12 April 2013, 7:28 pm</cite>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="12u">
+														<div class="divider"></div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="4u">
+														<div class="thumbnail">
+															<a href="#"><img src="images/pic6.jpg" alt="" /></a>
+														<blockquote>Baru saja menambahkan buku baru di daftar bukunya</blockquote>
+															<cite><strong>Dita Firlysya</strong>12 April 2013, 7:28 pm</cite>
+														</div>
+													</div>
+													<div class="4u">
+														<div class="thumbnail">
+															<a href="#"><img src="images/pic1.jpg" alt="" /></a>
+															<blockquote>Baru saja mengubah status buku "Anatomi & Fisiologi" miliknya</blockquote>
+															<cite><strong>Firlia Sandyta</strong>12 April 2013, 7:20 pm</cite>
+														</div>
+													</div>
+													<div class="4u">
+														<div class="thumbnail last">
+															<a href="#"><img src="images/pic3.jpg" alt="" /></a>
+															<blockquote>Baru saja mengubah lokasinya</blockquote>
+															<cite><strong>Yusiana Nempyong</strong>12 April 2013, 7:10 pm</cite>
+														</div>
+													</div>
+												</div>
+											</div>
+										</section>
+									</div>
+								</div>								
+
+								</article>							
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+	
+		<!-- Footer -->
+			<div id="footer-wrapper">
+				<footer class="5grid-layout" id="site-footer">
+					<div class="row">
+						<div class="3u">
+							<section class="first">
+								<h2>Developer</h2>
+								<ul class="link-list">
+									<li><img style="vertical-align:middle;" src="images/pic4.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=ahmadahfa">Ahmad Fanani</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic1.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=firliasandyta">Firlia Sandyta</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic2.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=irfan92">Muhammad Irfan Nasution</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic5.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=nempyong">Vemmy Yusiana</a></li>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Link</h2>
+								<ul class="link-list">
+									<li><a href="http://twitter.com/Buku_Kuliah">Twitter</a>
+									<li><a href="http://www.facebook.com/pages/Buku-Kuliahcom/550712361617304?fref=ts">Facebook</a>
+									<li><a href="#">About</a>
+																	
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Help</h2>
+								<ul class="link-list">
+									<li><a href="#">Policy</a>
+									<li><a href="#">Terms and Conditions</a>
+									<li><a href="#">User Guide</a>
+									<li><a href="#">F.A.Q.</a>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section class="last">
+								<h2>Contact Us</h2>
+								<ul class="link-list">
+									<li><a href="#">support@buku-kuliah.com</a>
+									<li>(+62) 8576 1234 123</li>
+									<li>Depok, West Java</li>
+									<li>Indonesia</li>
+								</ul>
+							</section>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div class="divider"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div id="copyright">
+								&copy; 2013 Buku-Kuliah.com. <br />PPL C4 - All Rights Reserved
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+
+	</body>
+</html>

@@ -1,0 +1,247 @@
+<?php
+	if(!$_SESSION['SessionData']){
+		$_SESSION['halaman-utama.tpt']['message'] = "You're not authorized";
+		header("Location: index.php");
+		exit(0);
+	}
+?>
+
+<!DOCTYPE HTML>
+<!--
+	Arcana 1.5 by HTML5 Up!
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<link rel="icon" type="image/png" href="images/logo.png" alt="logo">
+		<title><?php echo $_SESSION['SessionData']['Nama'];?> - Portal Online Pinjam-meminjam Buku Kuliah</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700" rel="stylesheet" />
+		<noscript><link rel="stylesheet" href="css/5grid/core.css" /><link rel="stylesheet" href="css/5grid/core-desktop.css" /><link rel="stylesheet" href="css/5grid/core-1200px.css" /><link rel="stylesheet" href="css/5grid/core-noscript.css" /><link rel="stylesheet" href="css/style.css" /><link rel="stylesheet" href="css/style-desktop.css" /></noscript>
+		<script src="css/5grid/jquery.js"></script>
+		<script src="js/jquery.tools.min.js"></script>
+		<script src="css/5grid/init.js?use=mobile,desktop,1000px&amp;mobileUI=1&amp;mobileUI_theme=none&amp;mobileUI_titleBarHeight=60&amp;mobileUI_openerWidth=52"></script>
+		<!--[if IE 9]><link rel="stylesheet" href="css/style-ie9.css" /><![endif]-->
+		<link rel="stylesheet" href="css/jRating.jquery.css" type="text/css" />
+		<script src="js/jRating.jquery.js"></script>		
+		<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+		<style>
+			  .ui-autocomplete-loading {
+				background: white url('images/loading-16x16.gif') right center no-repeat;
+			  }
+		</style>
+	  
+		<script>  
+			$(document).ready(function(){
+			 $(".ui-autocomplete").position({
+					my: "left bottom",
+					at: "left top",
+					of: $("#to"),
+				collision: "flipfit flipfit"
+				});
+				
+			  });
+			  
+			$(document).ready(function(){
+				$( "#to" ).autocomplete({
+				source: function( request, response ) {
+	 				url = "ajaxs/usernames.php?term=" + request.term; 
+					$.getJSON(url + '&callback=?', function(data) {
+						response(data);
+					});
+				}
+				});
+			});
+		</script>
+	
+	</head>
+	<body>
+
+
+		<!-- Header -->
+
+			<div id="header-wrapper">
+				<header class="5grid-layout" id="site-header">
+					<div class="row">
+						<div class="12u">
+							<div id="logo">
+								<img style="z-index: 1000000;" src="images/logo.png" alt="logo" width="150" height="150" />
+							</div>
+							<nav class="mobileUI-site-nav" id="site-nav">
+								<ul>
+									<li><a href="index.php">Homepage</a></li>
+									<?php
+										if(isset($_SESSION['SessionData']['Nama'])){ ?>
+											<li class="current_page_item"><a href="controller.php?dispatch=lihat-profil">Profile</a></li>											
+											<li><a href="controller.php?dispatch=keluar">Sign Out</a></li>
+									<?php }else{ ?>											
+											<li><a href="controller.php?dispatch=daftar-pengguna">Sign Up</a></li>
+									<?php } ?>
+								</ul>
+							</nav>
+							<div class="search">
+								<form action="controller.php" method="get">
+									<input type="hidden" name="dispatch" value="pencarian" />
+									<input style="background: #fff;" type="text" id="search" name="keywords" placeholder="Enter keywords to search" required>
+									<input type="submit" value="Search" id="submit" class="button">
+								</form>
+							</div>
+						</div>
+					</div>
+				</header>
+			</div>
+
+
+		<!-- Main -->
+
+			<div id="main-wrapper" class="subpage">
+				<div class="5grid-layout">
+					<div class="row">
+						<div class="9u">
+							<?php 
+							//var_dump($_SESSION['kirim-pesan.tpt']['message']);// = "Error saat mengisi data";
+							if(isset($_SESSION['kirim-pesan.tpt']['message'])){?>
+								<div class="row">
+									<div class="12u">
+										<div class="error-box">
+											<span><?php echo $_SESSION['kirim-pesan.tpt']['message']; unset($_SESSION['kirim-pesan.tpt']['message']); ?></span>
+										</div>
+									</div>
+								</div>
+							<?php }?>
+							<!-- Content -->
+
+								<article class="first">
+								
+								<div class="row">
+									<div class="12u">
+									
+										<div class="cta-box2">
+											<form name="form1" method="post" action="controller.php">
+												<input type="hidden" name="dispatch" value="kirim-pesan"/>	<h2 style="text-align:center">Send Message</h2>
+												<h3>To :</h3>
+												<div style="height:80px">
+													<input style="background-color:#fff;" name="to" id="to" type="text" value="<?php echo @$_SESSION['kirim-pesan.tpt']['to']; ?>" placeholder="Type the username this message is sent to" />
+												</div>
+												<h3>Subject:</h3>
+												<input style="background-color:#fff;" type="text" name="subject" id="subject" value="<?php echo @$_SESSION['kirim-pesan.tpt']['subject']; ?>" placeholder="Subject goes here..." />
+
+												<h3>Message :</h3>
+												<textarea style="background-color:#fff;" name="message" placeholder="Type your message content here..."><?php echo @$_SESSION['kirim-pesan.tpt']['message']; ?></textarea>
+												<div style="padding:10px; float:right">
+													<input type="submit" value="Send" class="button" />
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								
+								</article>							
+						</div>
+						<div class="3u">
+						
+						<!-- Sidebar -->
+							
+								<section >
+									<h3><?php echo $_SESSION['SessionData']['Nama'];?></h3>
+							<div style="padding: 10px; border: 1px solid #eee">
+									  <p><a href="#"><img src="<?php echo $_SESSION['SessionData']['URLFoto'];?>" width="150px" height="180px" alt="" /></a> </p>
+									  <section >
+									    <div style="padding: 10px; border: 1px solid #eee">
+									      <ul class="link-list">
+									        <li> <img style="vertical-align:middle;" src="images/picture.png" alt="" width="30" height="30"/>  <a href="controller.php?dispatch=ubah-gambar">Change Profile Picture</a></li>
+									        <li> <img style="vertical-align:middle;" src="images/edit-profil.png" alt="" width="30" height="30"/> <a href="controller.php?dispatch=ubah-profil">Update My Profile</a></li>
+								          </ul>
+								        </div>
+								      </section>
+                                      <section class="last">
+                                        <h3>Messaging</h3>
+                                        <div style="padding: 10px; border: 1px solid #eee">
+                                          <ul class="link-list">
+                                            <li><img style="vertical-align:middle;" src="images/inbox-pict.jpg" alt="" width="30" height="30"/> <a href="controller.php?dispatch=pesan-masuk">Inbox</a></li>
+                                            <li><img style="vertical-align:middle;" src="images/create.jpg" alt="" width="30" height="30"/><a href="controller.php?dispatch=kirim-pesan">Create New Message</a></li>
+                                          </ul>
+                                        </div>
+                                      </section>
+                                      <p>&nbsp;</p>
+									</div>
+                                      </section>
+                                      <p>&nbsp;</p>
+									</div>
+								</section>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+
+	
+		<!-- Footer -->
+			<div id="footer-wrapper">
+				<footer class="5grid-layout" id="site-footer">
+					<div class="row">
+						<div class="3u">
+							<section class="first">
+								<h2>Developer</h2>
+								<ul class="link-list">
+									<li><img style="vertical-align:middle;" src="images/pic4.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=ahmadahfa">Ahmad Fanani</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic1.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=firliasandyta">Firlia Sandyta</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic2.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=irfan92">Muhammad Irfan Nasution</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic5.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=nempyong">Vemmy Yusiana</a></li>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Link</h2>
+								<ul class="link-list">
+									<li><a href="http://twitter.com/Buku_Kuliah">Twitter</a>
+									<li><a href="http://www.facebook.com/pages/Buku-Kuliahcom/550712361617304?fref=ts">Facebook</a>
+									<li><a href="#">About</a>
+																	
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Help</h2>
+								<ul class="link-list">
+									<li><a href="#">Policy</a>
+									<li><a href="#">Terms and Conditions</a>
+									<li><a href="#">User Guide</a>
+									<li><a href="#">F.A.Q.</a>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section class="last">
+								<h2>Contact Us</h2>
+								<ul class="link-list">
+									<li><a href="#">support@buku-kuliah.com</a>
+									<li>(+62) 8576 1234 123</li>
+									<li>Depok, West Java</li>
+									<li>Indonesia</li>
+								</ul>
+							</section>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div class="divider"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div id="copyright">
+								&copy; 2013 Buku-Kuliah.com. <br />PPL C4 - All Rights Reserved
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+
+	</body>
+</html>

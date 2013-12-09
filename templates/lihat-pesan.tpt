@@ -1,0 +1,247 @@
+<?php
+	if(!$_SESSION['SessionData']){
+		$_SESSION['halaman-utama.tpt']['message'] = "You're not authorized";
+		header("Location: index.php");
+		exit(0);
+	}
+	if(!$_SESSION['lihat-pesan.tpt']){
+		header("Location: controller.php?dispatch=pesan-masuk");
+		exit(0);
+	}
+?>
+
+<!DOCTYPE HTML>
+<!--
+	Arcana 1.5 by HTML5 Up!
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<link rel="icon" type="image/png" href="images/logo.png" alt="logo">
+		<title>Inbox - Portal Online Pinjam Meminjam Buku</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700" rel="stylesheet" />
+		<noscript><link rel="stylesheet" href="css/5grid/core.css" /><link rel="stylesheet" href="css/5grid/core-desktop.css" /><link rel="stylesheet" href="css/5grid/core-1200px.css" /><link rel="stylesheet" href="css/5grid/core-noscript.css" /><link rel="stylesheet" href="css/style.css" /><link rel="stylesheet" href="css/style-desktop.css" /></noscript>
+		<script src="css/5grid/jquery.js"></script>
+		<script src="js/jquery.tools.min.js"></script>
+		<script src="js/jquery-ui.js"></script>
+		<script src="css/5grid/init.js?use=mobile,desktop,1000px&amp;mobileUI=1&amp;mobileUI_theme=none&amp;mobileUI_titleBarHeight=60&amp;mobileUI_openerWidth=52"></script>
+		<!--[if IE 9]><link rel="stylesheet" href="css/style-ie9.css" /><![endif]-->
+	 <script>
+	 $(document).ready(function(){
+	 $(".ui-autocomplete").position({
+			my: "left bottom",
+			at: "left top",
+			of: $("#location"),
+		collision: "flipfit flipfit"
+		});
+		
+	  });
+	  
+	  $(function() {
+		var availableTags = [
+		 "Medan",
+		 "Padang",
+		 "Lampung",
+		 "Depok",
+		 "Bandung",
+		 "Bogor",
+		 "Jakarta",
+		 "Bekasi",
+		 "Surabaya",
+		 "Makassar",
+		 "Jayapura"
+		];
+		$("#location").autocomplete({
+		  source: availableTags
+		});
+	  });
+	  </script>
+	</head>
+	<body>
+
+
+		<!-- Header -->
+
+			<div id="header-wrapper">
+				<header class="5grid-layout" id="site-header">
+					<div class="row">
+						<div class="12u">
+							<div id="logo">
+								<img style="z-index: 1000000;" src="images/logo.png" alt="logo" width="150" height="150" />
+								<h1 style="margin-left:30px; color:#fff; display: inline;">Buku-Kuliah.com</h1>
+							</div>
+							<nav class="mobileUI-site-nav" id="site-nav">
+								<ul>
+									<li class="current_page_item"><a href="index.php">Homepage</a></li>
+									<?php
+										if(isset($_SESSION['SessionData']) && $_SESSION['SessionData']['isAdmin'] == 1){ ?>
+											<li><a href="view.php?p=halaman-admin.tpt">Maintenance</a></li>											
+											<li><a href="controller.php?dispatch=keluar">Sign Out</a></li>
+									<?php }else{ ?>
+											<li><a href="controller.php?dispatch=lihat-profil">Profile</a></li>								
+											<li><a href="controller.php?dispatch=keluar">Sign Out</a></li>
+									<?php }?>
+								</ul>
+							</nav>
+							<div class="search">
+								<form action="controller.php" method="get">
+									<input type="hidden" name="dispatch" value="pencarian" />
+									<input style="background: #fff;" type="text" id="search" name="keywords" placeholder="Enter keywords to search" required>
+									<input type="submit" value="Search" id="submit" class="button">
+								</form>
+							</div>
+						</div>
+					</div>
+				</header>
+			</div>
+
+		<!-- Main -->
+
+			<div id="main-wrapper" class="subpage">
+				<div class="5grid-layout">
+					<div class="row">
+						<div class="9u">					
+							<?php 
+							if(isset($_SESSION['lihat-pesan.tpt']['message'])){?>
+								<div class="row">
+									<div class="12u">
+										<div class="error-box">
+											<span><?php echo $_SESSION['lihat-pesan.tpt']['message']; unset($_SESSION['lihat-pesan.tpt']['message']); ?></span>
+										</div>
+									</div>
+								</div>
+							<?php }?>
+						
+							<!-- Content -->
+
+								<article class="first">
+									<div id="leftcontainer">
+										<h2 style="margin-top: 20px">Message</h2>
+										<table width="680" border="3" cellpadding="5" cellspacing="5">
+										<table "border="3" cellpadding="5" cellspacing="5"  style="border:1px dashed #aaa">
+										  <tr>
+												<td width="680" style="background-color: #aaaaaa;"><span style="font-size:x-large">From: <a href="controller.php?dispatch=lihat-profil&user=<?php echo $_SESSION['lihat-pesan.tpt']['Username']; ?>" ><?php echo $_SESSION['lihat-pesan.tpt']['Nama'] ?></a></span>
+												<span style="float:right" style="font-size:12px"><?php echo date("d F Y H:i:s", strtotime($_SESSION['lihat-pesan.tpt']['Waktu_Pesan'])) ?></span>
+												</td>
+										  </tr>
+										  <tr>
+												<td width="680"><?php echo stripslashes(stripslashes(preg_replace("|\\\\r\\\\n|i","<br />",$_SESSION['lihat-pesan.tpt']['Isi_Pesan']))); ?></td>
+										  </tr>
+                                       </table>
+									<br>
+									<span style="float:left">
+										<?php if($_SESSION['lihat-pesan.tpt']['previous']){ ?>
+											<a href="controller.php?dispatch=lihat-pesan&id=<?php echo $_SESSION['lihat-pesan.tpt']['previous']; ?>" class="button">Previous Message</a>
+										<?php }?>
+									</span>
+									<span style="float:right">
+<a href="controller.php?dispatch=kirim-pesan&user=<?php echo $_SESSION['lihat-pesan.tpt']['Username']; ?>" class="button">Reply</a>
+										<?php if($_SESSION['lihat-pesan.tpt']['next']) {?>
+											<a href="controller.php?dispatch=lihat-pesan&id=<?php echo $_SESSION['lihat-pesan.tpt']['next']; ?>" class="button">Next Message</a>
+										<?php }?>
+									</span>
+									<br><br><br>    
+									
+								</article>							
+						</div>
+						<div class="3u">
+						<!-- Sidebar -->
+							<section >
+									<h3><?php echo $_SESSION['SessionData']['Nama'];?></h3>
+									<div style="padding: 10px; border: 1px solid #eee">
+									  <p><a href="#"><img src="<?php echo $_SESSION['SessionData']['URLFoto'];?>" width="150px" height="180px" alt="" /></a> </p>
+									  <section >
+									    <div style="padding: 10px; border: 1px solid #eee">
+									      <ul class="link-list">									        
+									        <li> <img style="vertical-align:middle;" src="images/picture.png" alt="" width="30" height="30"/>  <a href="controller.php?dispatch=ubah-gambar">Change Profile Picture</a></li>
+									        <li> <img style="vertical-align:middle;" src="images/edit-profil.png" alt="" width="30" height="30"/> <a href="controller.php?dispatch=ubah-profil">Update My Profile</a></li>
+								          </ul>
+								        </div>
+								      </section>
+                                      <section class="last">
+                                        <h3>Messaging</h3>
+                                        <div style="padding: 10px; border: 1px solid #eee">
+                                          <ul class="link-list">
+                                            <li><img style="vertical-align:middle;" src="images/inbox-pict.jpg" alt="" width="30" height="30"/> <a href="controller.php?dispatch=pesan-masuk">Inbox</a></li>
+                                            <li><img style="vertical-align:middle;" src="images/create.jpg" alt="" width="30" height="30"/><a href="controller.php?dispatch=kirim-pesan">Create New Message</a></li>
+                                          </ul>
+                                        </div>
+                                      </section>
+                                      <p>&nbsp;</p>
+									</div>
+								</section>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+
+		<!-- Footer -->
+
+			
+		<div id="footer-wrapper">
+				<footer class="5grid-layout" id="site-footer">
+					<div class="row">
+						<div class="3u">
+							<section class="first">
+								<h2>Men Behind</h2>
+								<ul class="link-list">
+									<li><img style="vertical-align:middle;" src="images/pic4.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=ahmadahfa">Ahmad Fanani</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic1.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=firliasandyta">Firlia Sandyta</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic2.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=irfan92">Muhammad Irfan Nasution</a></li>
+									<li><img style="vertical-align:middle;" src="images/pic5.jpg" alt="" width="20" height="20"/>&nbsp;&nbsp;&nbsp;<a href="controller.php?dispatch=lihat-profil&user=nempyong">Vemmy Yusiana</a></li>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Links</h2>
+								<ul class="link-list">
+									<li><a href="http://twitter.com/Buku_Kuliah">Twitter</a>
+									<li><a href="http://www.facebook.com/pages/Buku-Kuliahcom/550712361617304?fref=ts">Facebook</a>
+									<li><a href="#">About</a>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section>
+								<h2>Helps</h2>
+								<ul class="link-list">
+									<li><a href="#">Tutorials</a>
+									<li><a href="#">F.A.Q.</a>
+								</ul>
+							</section>
+						</div>
+						<div class="3u">
+							<section class="last">
+								<h2>Contact Us</h2>
+								<ul class="link-list">
+									<li><a href="#">support@buku-kuliah.com</a>
+									<li>(+62) 8576 1234 123</li>
+									<li>Depok, North Java</li>
+									<li>Indonesia</li>
+								</ul>
+							</section>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div class="divider"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="12u">
+							<div id="copyright">
+								&copy; 2013 Buku-Kuliah.com. <br />C4 - Proyek Perangkat Lunak 2012/2013
+							</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+
+	</body>
+</html>
